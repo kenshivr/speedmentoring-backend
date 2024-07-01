@@ -1,29 +1,30 @@
-const cors = require('cors');
-const { Pool } = require('pg');
+const cors = require('cors')
+const mysql = require('mysql');
 const express = require('express');
 const bodyParser = require('body-parser');
 
 const app = express();
 const port = 3001;
 
-// Configuración de la conexión a PostgreSQL
-const pool = new Pool({
-  user: 'postgres',
+// Configuración de la conexión a MySQL
+const pool = mysql.createPool({
+  connectionLimit: 10,
   host: 'localhost',
-  database: 'SpeedMentoring',
-  password: '1234',
-  port: 5432
+  user: 'vidal',
+  password: '123',  // Utiliza la contraseña que asignaste al usuario vidal
+  database: 'speedmentoring'
 });
 
-// Verificar la conexión a la base de datos
-pool.connect((err, client, release) => {
+// Verificar la conexión a la base de datos MySQL
+pool.getConnection((err, connection) => {
   if (err) {
-    return console.error('Error al conectar a la base de datos:', err.stack);
+    console.error('Error al conectar a la base de datos MySQL:', err.stack);
+    return;
   }
-  console.log('Conexión a la base de datos establecida');
+  console.log('Conexión a la base de datos MySQL establecida');
 
-  // Liberar el cliente de la conexión
-  release();
+  // Liberar la conexión
+  connection.release();
 });
 
 // Middleware para habilitar CORS
@@ -33,31 +34,41 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Endpoint para manejar el login
-app.post('/api/login', async (req, res) => {
+app.post('/api/login', (req, res) => {
   const { AlumnoID, password } = req.body;
 
-  try {
-    const client = await pool.connect();
-    const query = 'SELECT * FROM "SpeedMentoring_Alumno" WHERE "AlumnoID" = $1';
-    const result = await client.query(query, [AlumnoID]);
-
-    if (result.rows.length === 0) {
-      res.status(401).json({ message: 'Alumno no encontrado' });
-    } else {
-      const user = result.rows[0];
-
-      if (password === user.Password) {
-        res.json({ message: 'Inicio de sesión exitoso' });
-        console.log(`Alumno: ${AlumnoID}, Contraseña: ${password}`)
-      } else {
-        res.status(401).json({ message: 'Contraseña incorrecta' });
-      }
+  pool.getConnection((err, connection) => {
+    if (err) {
+      console.error('Error al obtener la conexión:', err.stack);
+      res.status(500).json({ message: 'Error en el servidor' });
+      return;
     }
-    client.release();
-  } catch (err) {
-    console.error('Error en la consulta de inicio de sesión:', err.stack);
-    res.status(500).json({ message: 'Error en el servidor' });
-  }
+
+    const query = 'SELECT * FROM speedmentoring_alumno WHERE alumnoid = ?';
+    connection.query(query, [AlumnoID], (error, results, fields) => {
+      if (error) {
+        console.error('Error en la consulta de inicio de sesión:', error.stack);
+        res.status(500).json({ message: 'Error en el servidor' });
+        return;
+      }
+
+      if (results.length === 0) {
+        res.status(401).json({ message: 'Alumno no encontrado' });
+      } else {
+        const user = results[0];
+
+        if (password === user.password) {
+          res.json({ message: 'Inicio de sesión exitoso' });
+          console.log(`Alumno: ${AlumnoID}, Contraseña: ${password}`);
+        } else {
+          res.status(401).json({ message: 'Contraseña incorrecta' });
+        }
+      }
+
+      // Liberar la conexión
+      connection.release();
+    });
+  });
 });
 
 // Iniciar el servidor Express
