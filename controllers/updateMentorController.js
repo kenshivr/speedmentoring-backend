@@ -1,11 +1,11 @@
-const pool = require('../config/db');
+const pool = require('../config/db'); // Conexion a la base de datos
 
-// Endpoint para obtener el perfil del usuario
+// Endpoint para obtener el perfil del mentor
 const getUserProfile = (req, res) => {
-  const { userId } = req.params;
+  const { userId } = req.params; // El userId es el rfc del mentor para identificarlo
 
   pool.getConnection((err, connection) => {
-    if (err) {
+    if (err) { // En caso de error en la base de datos
       console.error('Error al obtener la conexión a la base de datos:', err.stack);
       res.status(500).json({ message: 'Error en la conexión a la base de datos' });
       return;
@@ -15,23 +15,23 @@ const getUserProfile = (req, res) => {
       SELECT numerotelefono, correoelectronico, empresa, puesto, especialidad
       FROM speedmentoring_mentor
       WHERE mentorrfc = ?
-    `;
+    `; // Query para obtener los datos que pueden ser actualizados por parte del mentor
 
-    connection.query(query, [userId], (error, results) => {
+    connection.query(query, [userId], (error, results) => { // se hace asi el query para evitar la inyeccion sql
       connection.release();
 
-      if (error) {
-        console.error('Error al obtener el perfil:', error.stack);
+      if (error) { // Si hay un error en el query
+        console.error('Error al obtener el perfil:', error.stack); 
         res.status(500).json({ message: 'Error al obtener el perfil' });
         return;
       }
 
-      if (results.length === 0) {
+      if (results.length === 0) { // Si no se encuentra ningun mentor con ese rfc
         res.status(404).json({ message: 'Perfil no encontrado' });
         return;
       }
 
-      res.json(results[0]);
+      res.json(results[0]); // Se responden los datos del mentor a la solicitud get
 
     });
   });
@@ -39,7 +39,7 @@ const getUserProfile = (req, res) => {
 
 // Endpoint para actualizar el perfil del usuario
 const updateProfile = (req, res) => {
-  const { userId, phoneNumber, email, company, position, specialty } = req.body;
+  const { userId, phoneNumber, email, company, position, specialty } = req.body; // Se deben enviar los datos del mentor a la peticion post
 
   // Validar formato de datos
   const phoneRegex = /^[0-9]{10}$/;
@@ -55,7 +55,7 @@ const updateProfile = (req, res) => {
 
   // Actualizar base de datos
   pool.getConnection((err, connection) => {
-    if (err) {
+    if (err) { // En caso de error en la base de datos
       console.error('Error al obtener la conexión a la base de datos:', err.stack);
       res.status(500).json({ message: 'Error en la conexión a la base de datos' });
       return;
@@ -65,18 +65,18 @@ const updateProfile = (req, res) => {
       UPDATE speedmentoring_mentor
       SET numerotelefono = ?, correoelectronico = ?, empresa = ?, puesto = ?, especialidad = ?
       WHERE mentorrfc = ?
-    `;
+    `; // Query para obtener los datos que pueden ser actualizados por parte del mentor
 
-    connection.query(query, [phoneNumber, email, company, position, specialty, userId], (error, results) => {
+    connection.query(query, [phoneNumber, email, company, position, specialty, userId], (error, results) => { // se hace asi el query para evitar la inyeccion sql
       connection.release();
       
-      if (error) {
+      if (error) { // Si hay un error en el query
         console.error('Error al actualizar el perfil:', error.stack);
         res.status(500).json({ message: 'Error al actualizar el perfil' });
         return;
       }
 
-      res.json({ message: 'Perfil actualizado correctamente' });
+      res.json({ message: 'Perfil actualizado correctamente' }); // Si el perfil se actualizo adecuadamente se retorna el mensaje de exito
     });
   });
 };
