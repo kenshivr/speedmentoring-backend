@@ -1,37 +1,62 @@
 const pool = require('../config/db');
 
 const login = (req, res) => {
-  const { AlumnoID, password } = req.body;
 
+  const { user, password } = req.body;
+  
   pool.getConnection((err, connection) => {
+
     if (err) {
-      console.error('Error al obtener la conexión:', err.stack);
-      res.status(500).json({ message: 'Error en el servidor' });
+      console.error('Error al obtener la conexión a la base de datos:', err.stack);
+      res.status(500).json({ message: 'Error en la conexion a la base de datos' });
       return;
     }
 
-    const query = 'SELECT * FROM speedmentoring_alumno WHERE AlumnoID = ?';
-    connection.query(query, [AlumnoID], (error, results, fields) => {
+    const queryAlumno = 'SELECT * FROM speedmentoring_alumno WHERE alumnoid = ?';
+    connection.query(queryAlumno, [user], (error, results) => {
       if (error) {
-        console.error('Error en la consulta de inicio de sesión:', error.stack);
-        res.status(500).json({ message: 'Error en el servidor' });
+        console.error('Error en la consulta de inicio de sesión (alumno):', error.stack);
+        res.status(500).json({ message: 'Error en la consulta de inicio de sesión (alumno)' });
+        connection.release();
         return;
       }
 
       if (results.length === 0) {
-        res.status(401).json({ message: 'Alumno no encontrado' });
-      } else {
-        const user = results[0];
+        // Si no se encuentra al alumno, buscar en la tabla de mentores
+        const queryMentor = 'SELECT * FROM speedmentoring_mentor WHERE mentorrfc = ?';
+        connection.query(queryMentor, [user], (error, results) => {
+          if (error) {
+            console.error('Error en la consulta de inicio de sesión (mentor):', error.stack);
+            res.status(500).json({ message: 'Error en la consulta de inicio de sesión (mentor)' });
+            connection.release();
+            return;
+          }
 
-        if (password === user.password) {   
-          res.json({ message: 'Inicio de sesión exitoso' });
-          console.log(`Alumno: ${AlumnoID}, Contraseña: ${password}`);
+          if (results.length === 0) {
+            res.status(401).json({ message: 'Mentor no encontrado' });
+          } else {
+            const mentor = results[0];
+
+            if (password === mentor.hash) {
+              res.json({ success: true, userType: 'mentor', userId: mentor.mentorrfc , message: 'Inicio de sesión exitoso' });
+            } else {
+              res.status(401).json({ message: 'Contraseña incorrecta' });
+            }
+          }
+
+          connection.release();
+        });
+      } else {
+        const alumno = results[0];
+
+        if (password === alumno.password) {
+          res.json({ success: true, userType: 'student', userId: alumno.alumnoid , message: 'Inicio de sesión exitoso' });
         } else {
           res.status(401).json({ message: 'Contraseña incorrecta' });
         }
-      }
 
-      connection.release();
+        connection.release();
+      }
     });
   });
 };
