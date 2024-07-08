@@ -1,10 +1,18 @@
-const pool = require('../config/db');
+const pool = require('../config/db'); // Asumiendo que `pool` es tu configuración de conexión a la base de datos
 
 const showSesionesMentorController = (req, res) => {
-  const mentorId = req.params.id;
+  const mentorId = req.params.id; // Obtiene el id del mentor desde los parámetros de la URL
 
-  console.log(mentorId);
+  // Consulta SQL para obtener las sesiones del mentor con su información
+  const query = `
+    SELECT s.fecha, a.nombre, r.reporteid, s.sesionid
+    FROM speedmentoring_sesionesmentoria s
+    JOIN speedmentoring_alumno a ON s.alumnoid = a.alumnoid
+    LEFT JOIN speedmentoring_reportes r ON s.sesionid = r.sesionid
+    WHERE s.mentorrfc = ?
+  `;
 
+  // Ejecutar la consulta usando el pool de conexiones
   pool.getConnection((err, connection) => {
     if (err) {
       console.error('Error al obtener la conexión a la base de datos', err);
@@ -12,35 +20,23 @@ const showSesionesMentorController = (req, res) => {
       return;
     }
 
-    console.log('Bandera 1');
-
-    const query = 'SELECT s.fecha, a.nombre, r.reporteid ' +
-                  'FROM speedmentoring_sesionesmentoria s ' +
-                  'JOIN speedmentoring_alumno a ON s.alumnoid = a.alumnoid ' +
-                  'LEFT JOIN speedmentoring_reportes r ON s.sesionid = r.sesionid ' +
-                  'WHERE s.mentorrfc = ?';
-
-    connection.query(query, [mentorId], (error, result) => {
-      connection.release();
+    connection.query(query, [mentorId], (error, results) => {
+      connection.release(); // Liberar la conexión después de la consulta
 
       if (error) {
-        console.log('Bandera 2');
         console.error('Error en la consulta (mentor: sesiones)', error);
         res.status(500).json({ message: 'Error en la consulta (mentor: sesiones)' });
         return;
       }
 
-      if (result.length === 0) {
-        console.log('Bandera 3');
+      if (results.length === 0) {
         res.json({ success: false });
         return;
       }
 
-      console.log('Bandera 4');
-      console.log(result);
-      res.json({ success: true, data: result });
+      res.json({ success: true, data: results }); // Enviar los resultados al frontend
     });
   });
-}
+};
 
 module.exports = showSesionesMentorController;

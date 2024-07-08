@@ -9,6 +9,7 @@ const updateProfileRoutes = require('./routes/updateMentor');
 const getSpecialties = require('./routes/getSpecialties');
 const changePass = require('./routes/changePasswordMentor');
 const showSesionesMentorRoutes = require('./routes/showSesionesMentor');
+const getReportsMentorRoutes = require('./routes/getReportsMentor');
 
 const app = express();
 const port = 3001;
@@ -22,6 +23,7 @@ app.use('/api', updateProfileRoutes);
 app.use('/api', getSpecialties);
 app.use('/api', changePass);
 app.use('/api', showSesionesMentorRoutes);
+app.use('/api', getReportsMentorRoutes);
 
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
