@@ -1,16 +1,15 @@
 const pool = require('../config/db'); // Asumiendo que `pool` es tu configuración de conexión a la base de datos
 
-const showSesionesMentorController = (req, res) => {
-  const mentorId = req.params.id; // Obtiene el id del mentor desde los parámetros de la URL
+const showSesionesStudentController = (req, res) => {
+  const studentId = req.params.id; // Obtiene el id del mentor desde los parámetros de la URL
 
-  
   // Consulta SQL para obtener las sesiones del mentor con su información
   const query = `
-    SELECT s.fecha, a.nombre, r.reporteid, s.sesionid
+    SELECT s.fecha, a.nombre, r.reporteid, s.sesionid 
     FROM speedmentoring_sesionesmentoria s
-    JOIN speedmentoring_alumno a ON s.alumnoid = a.alumnoid
+    INNER JOIN speedmentoring_alumno a ON s.alumnoid = a.alumnoid
     LEFT JOIN speedmentoring_reportes r ON s.sesionid = r.sesionid
-    WHERE s.mentorrfc = ?
+    WHERE a.alumnoid = ? ;
   `;
 
   // Ejecutar la consulta usando el pool de conexiones
@@ -21,12 +20,12 @@ const showSesionesMentorController = (req, res) => {
       return;
     }
 
-    connection.query(query, [mentorId], (error, results) => {
+    connection.query(query, [studentId], (error, results) => {
       connection.release(); // Liberar la conexión después de la consulta
 
       if (error) {
-        console.error('Error en la consulta (mentor: sesiones)', error);
-        res.status(500).json({ message: 'Error en la consulta (mentor: sesiones)' });
+        console.error('Error en la consulta (estudiante: sesiones)', error);
+        res.status(500).json({ message: 'Error en la consulta (estudiante: sesiones)' });
         return;
       }
 
@@ -40,4 +39,4 @@ const showSesionesMentorController = (req, res) => {
   });
 };
 
-module.exports = showSesionesMentorController;
+module.exports = showSesionesStudentController;
