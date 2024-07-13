@@ -1,30 +1,31 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
+import express from 'express';
+import { json } from 'body-parser';
+import cors from 'cors';
 
-const db = require('./config/db');
+import db from './config/db';
 
-const loginRoutes = require('./routes/login');
-const searchRoutes = require('./routes/search');
+import loginRoutes from './routes/login';
+import searchRoutes from './routes/search';
 
-const updateProfileRoutes = require('./routes/updateMentor');
-const getSpecialties = require('./routes/getSpecialties');
-const changePass = require('./routes/changePasswordMentor');
-const showSesionesMentorRoutes = require('./routes/showSesionesMentor');
-const getReportsMentorRoutes = require('./routes/getReportsMentor');
+import updateProfileRoutes from './routes/updateMentor';
+import getSpecialties from './routes/getSpecialties';
+import changePass from './routes/changePasswordMentor';
+import showSesionesMentorRoutes from './routes/showSesionesMentor';
+import getReportsMentorRoutes from './routes/getReportsMentor';
 
-const getProfileStudent = require('./routes/getProfileStudent');
-const showSesionesStudentRoutes = require('./routes/showSesionesStudent');
-const getReportsStudentRoutes = require('./routes/getReportsStudent');
+import getProfileStudent from './routes/getProfileStudent';
+import showSesionesStudentRoutes from './routes/showSesionesStudent';
+import getReportsStudentRoutes from './routes/getReportsStudent';
 
 const app = express();
 const port = 3001;
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(json());
 
 app.use('/api', loginRoutes);
 app.use('/api', searchRoutes);
+
 app.use('/api', updateProfileRoutes);
 app.use('/api', getSpecialties);
 app.use('/api', changePass);

@@ -1,7 +1,7 @@
 // routes/getProfileStudent.js
 
 const express = require("express");
-const { getStudent, updateStudentEspecialidad } = require("../controllers/getProfileStudent");
+const { getStudent, updateStudentEspecialidad } = require("../controllers/getProfileStudent").default;
 const router = express.Router();
 
 router.get("/getStudent/:id", getStudent);

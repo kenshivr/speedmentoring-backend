@@ -1,10 +1,10 @@
-const pool = require('../config/db'); // Asegúrate de que la ruta al archivo de configuración de la base de datos sea correcta
+import { getConnection } from '../config/db'; // Asegúrate de que la ruta al archivo de configuración de la base de datos sea correcta
 
 // Endpoint para obtener el perfil del estudiante
 const getStudent = (req, res) => {
   const studentId = req.params.id;
 
-  pool.getConnection((err, connection) => {
+  getConnection((err, connection) => {
     if (err) {
       console.error("Error en la conexión a la base de datos (perfil estudiante)", err.stack);
       res.status(500).json({ message: "Error en la conexión a la base de datos (perfil estudiante)" });
@@ -39,7 +39,7 @@ const updateStudentEspecialidad = (req, res) => {
 
   const query = 'UPDATE speedmentoring_alumno SET especialidad = ? WHERE alumnoid = ?';
 
-  pool.getConnection((err, connection) => {
+  getConnection((err, connection) => {
     if (err) {
       console.error("Error en la conexión a la base de datos (actualización de especialidad)", err.stack);
       res.status(500).json({ message: "Error en la conexión a la base de datos (actualización de especialidad)" });
@@ -60,7 +60,7 @@ const updateStudentEspecialidad = (req, res) => {
   });
 };
 
-module.exports = {
+export default {
   getStudent,
   updateStudentEspecialidad
 };

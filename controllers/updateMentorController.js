@@ -1,8 +1,8 @@
-const pool = require('../config/db'); // Conexion a la base de datos
+const pool = require('../config/db'); // Conexión a la base de datos
 
 // Endpoint para obtener el perfil del mentor
 const getUserProfile = (req, res) => {
-  const { userId } = req.params; // El userId es el rfc del mentor para identificarlo
+  const { userId } = req.params; // El userId es el RFC del mentor para identificarlo
 
   pool.getConnection((err, connection) => {
     if (err) { // En caso de error en la base de datos
@@ -12,7 +12,7 @@ const getUserProfile = (req, res) => {
     }
 
     const query = `
-      SELECT numerotelefono, correoelectronico, empresa, puesto, especialidad
+      SELECT nombre, apellidoPaterno, apellidoMaterno, rfc, numerotelefono, correoelectronico, empresa, puesto, especialidad, gradoAcademico, maestria
       FROM speedmentoring_mentor
       WHERE mentorrfc = ?
     `; // Query para obtener los datos que pueden ser actualizados por parte del mentor
@@ -39,7 +39,7 @@ const getUserProfile = (req, res) => {
 
 // Endpoint para actualizar el perfil del usuario
 const updateProfile = (req, res) => {
-  const { userId, phoneNumber, email, company, position, specialty } = req.body; // Se deben enviar los datos del mentor a la peticion post
+  const { userId, phoneNumber, email, company, position, specialty, academicDegree, hasMasters } = req.body; // Se deben enviar los datos del mentor a la peticion post
 
   // Validar formato de datos
   const phoneRegex = /^[0-9]{10}$/;
@@ -63,11 +63,11 @@ const updateProfile = (req, res) => {
 
     const query = `
       UPDATE speedmentoring_mentor
-      SET numerotelefono = ?, correoelectronico = ?, empresa = ?, puesto = ?, especialidad = ?
+      SET numerotelefono = ?, correoelectronico = ?, empresa = ?, puesto = ?, especialidad = ?, gradoAcademico = ?, maestria = ?
       WHERE mentorrfc = ?
     `; // Query para obtener los datos que pueden ser actualizados por parte del mentor
 
-    connection.query(query, [phoneNumber, email, company, position, specialty, userId], (error, results) => { // se hace asi el query para evitar la inyeccion sql
+    connection.query(query, [phoneNumber, email, company, position, specialty, academicDegree, hasMasters, userId], (error, results) => { // se hace asi el query para evitar la inyeccion sql
       connection.release();
       
       if (error) { // Si hay un error en el query

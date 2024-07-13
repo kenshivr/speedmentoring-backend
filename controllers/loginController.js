@@ -1,10 +1,10 @@
-const pool = require('../config/db');
+import { getConnection } from '../config/db';
 
 const login = (req, res) => {
 
   const { user, password } = req.body;
   
-  pool.getConnection((err, connection) => {
+  getConnection((err, connection) => {
 
     if (err) {
       console.error('Error al obtener la conexión a la base de datos:', err.stack);
@@ -61,4 +61,4 @@ const login = (req, res) => {
   });
 };
 
-module.exports = { login };
+export default { login };

@@ -1,10 +1,10 @@
-const pool = require('../config/db');
+import { getConnection } from '../config/db';
 
 // Función para obtener detalles de una sesión y, si existe, el reporte asociado
 const getReportBySesionId = (req, res) => {
   const { sesionId } = req.params;
 
-  pool.getConnection((err, connection) => {
+  getConnection((err, connection) => {
     if (err) {
       console.error('Error al obtener la conexión a la base de datos:', err.stack);
       res.status(500).json({ message: 'Error en la conexión a la base de datos' });
@@ -42,7 +42,7 @@ const setReportBySesionId = (req, res) => {
   const { sesionId } = req.params;
   const { texto, calificacion, fecha } = req.body;
 
-  pool.getConnection((err, connection) => {
+  getConnection((err, connection) => {
     if (err) {
       console.error('Error al obtener la conexión a la base de datos:', err.stack);
       res.status(500).json({ message: 'Error en la conexión a la base de datos' });
@@ -120,4 +120,4 @@ const setReportBySesionId = (req, res) => {
   });
 };
 
-module.exports = { getReportBySesionId, setReportBySesionId };
+export default { getReportBySesionId, setReportBySesionId };
