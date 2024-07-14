@@ -1,21 +1,21 @@
 import express from 'express';
-import { json } from 'body-parser';
+// import { json } from 'body-parser';
+import pkg from 'body-parser';
+const { json } = pkg;
 import cors from 'cors';
 
-import db from './config/db';
+import loginRoutes from './routes/login.js';
+import searchRoutes from './routes/search.js';
 
-import loginRoutes from './routes/login';
-import searchRoutes from './routes/search';
+import updateProfileRoutes from './routes/updateMentor.js';
+import getSpecialties from './routes/getSpecialties.js';
+import changePass from './routes/changePasswordMentor.js';
+import showSesionesMentorRoutes from './routes/showSesionesMentor.js';
+import getReportsMentorRoutes from './routes/getReportsMentor.js';
 
-import updateProfileRoutes from './routes/updateMentor';
-import getSpecialties from './routes/getSpecialties';
-import changePass from './routes/changePasswordMentor';
-import showSesionesMentorRoutes from './routes/showSesionesMentor';
-import getReportsMentorRoutes from './routes/getReportsMentor';
-
-import getProfileStudent from './routes/getProfileStudent';
-import showSesionesStudentRoutes from './routes/showSesionesStudent';
-import getReportsStudentRoutes from './routes/getReportsStudent';
+import getProfileStudent from './routes/getProfileStudent.js';
+import showSesionesStudentRoutes from './routes/showSesionesStudent.js';
+import getReportsStudentRoutes from './routes/getReportsStudent.js';
 
 const app = express();
 const port = 3001;

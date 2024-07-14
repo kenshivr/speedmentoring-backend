@@ -1,6 +1,6 @@
 import { Router } from 'express';
 const router = Router();
-import { getUserProfile, updateProfile } from '../controllers/updateMentorController';
+const { getUserProfile, updateProfile } = require('../controllers/updateMentorController.js');
 
 // Ruta para obtener el perfil del usuario
 router.get('/getUserProfile/:userId', getUserProfile);

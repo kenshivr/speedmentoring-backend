@@ -1,11 +1,9 @@
-import { getConnection } from '../config/db';
+import getConnection from '../config/db.js';
 
-const login = (req, res) => {
-
+export const login = (req, res) => {
   const { user, password } = req.body;
-  
-  getConnection((err, connection) => {
 
+  getConnection((err, connection) => {
     if (err) {
       console.error('Error al obtener la conexión a la base de datos:', err.stack);
       res.status(500).json({ message: 'Error en la conexion a la base de datos' });
@@ -38,7 +36,7 @@ const login = (req, res) => {
             const mentor = results[0];
 
             if (password === mentor.hash) {
-              res.json({ success: true, userType: 'mentor', userId: mentor.mentorrfc , message: 'Inicio de sesión exitoso' });
+              res.json({ success: true, userType: 'mentor', userId: mentor.mentorrfc, message: 'Inicio de sesión exitoso' });
             } else {
               res.status(401).json({ message: 'Contraseña incorrecta' });
             }
@@ -50,7 +48,7 @@ const login = (req, res) => {
         const alumno = results[0];
 
         if (password === alumno.password) {
-          res.json({ success: true, userType: 'student', userId: alumno.alumnoid , message: 'Inicio de sesión exitoso' });
+          res.json({ success: true, userType: 'student', userId: alumno.alumnoid, message: 'Inicio de sesión exitoso' });
         } else {
           res.status(401).json({ message: 'Contraseña incorrecta' });
         }
@@ -60,5 +58,3 @@ const login = (req, res) => {
     });
   });
 };
-
-export default { login };

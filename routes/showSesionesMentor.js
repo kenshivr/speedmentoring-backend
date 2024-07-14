@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const showSesionesMentorController = require('../controllers/showSesionesMentorController').default;
+const showSesionesMentorController = require('../controllers/showSesionesMentorController');
 
 router.get('/showSesionesMentor/:id', showSesionesMentorController);
 
-module.exports = router;
+export default router;
