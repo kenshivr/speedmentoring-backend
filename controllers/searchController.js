@@ -11,7 +11,7 @@ const searchEmail = (req, res) => {
       return;
     }
 
-    const queryAlumno = 'SELECT * FROM speedmentoring_alumno WHERE alumnoid = ?';
+    const queryAlumno = 'SELECT * FROM SpeedMentoring_Alumno WHERE alumnoid = ? ';
     connection.query(queryAlumno, [id], (error, resultsAlumno) => {
       if (error) {
         console.error('Error en la consulta (alumno):', error.stack);
@@ -22,7 +22,7 @@ const searchEmail = (req, res) => {
 
       if (resultsAlumno.length === 0) {
         // Si no se encuentra al alumno, buscar en la tabla de mentores
-        const queryMentor = 'SELECT * FROM speedmentoring_mentor WHERE mentorrfc = ?';
+        const queryMentor = 'SELECT * FROM SpeedMentoring_Mentor WHERE MentorRFC = ?';
         connection.query(queryMentor, [id], (error, resultsMentor) => {
           if (error) {
             console.error('Error en la consulta (mentor):', error.stack);
@@ -39,7 +39,7 @@ const searchEmail = (req, res) => {
             const nuevaContraseña = 'nuevaContraseña123';
             const mailOptions = {
               from: 'mentoringspeed@gmail.com',
-              to: 'mentoringspeed@gmail.com',
+              to: 'mentoringspeed@gmail.com', // resultsMentor.CorreoElectronico
               subject: 'Recuperación de contraseña',
               text: `Tu nueva contraseña es: ${nuevaContraseña}`
             };
@@ -62,7 +62,7 @@ const searchEmail = (req, res) => {
         const nuevaContraseña = 'nuevaContraseña123';
         const mailOptions = {
           from: 'mentoringspeed@gmail.com',
-          to: 'mentoringspeed@gmail.com',
+          to: 'mentoringspeed@gmail.com',// resultsAlumno.CorreoElectronico
           subject: 'Recuperación de contraseña',
           text: `Tu nueva contraseña es: ${nuevaContraseña}`
         };

@@ -16,6 +16,9 @@ const getReportsMentorRoutes = require('./routes/getReportsMentor');
 const getProfileStudent = require('./routes/getProfileStudent');
 const showSesionesStudentRoutes = require('./routes/showSesionesStudent');
 const getReportsStudentRoutes = require('./routes/getReportsStudent');
+const getEventsStudent = require('./routes/getEventsStudent');
+const getEventsFull = require('./routes/getEventsFull');
+const changePasswordStudent = require('./routes/changePasswordStudent');
 
 const app = express();
 const port = 3001;
@@ -34,6 +37,9 @@ app.use('/api', getReportsMentorRoutes);
 app.use('/api', getProfileStudent);
 app.use('/api', showSesionesStudentRoutes);
 app.use('/api', getReportsStudentRoutes);
+app.use('/api', getEventsStudent);
+app.use('/api', changePasswordStudent);
+app.use('/api', getEventsFull);
 
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);

@@ -12,8 +12,9 @@ const login = (req, res) => {
       return;
     }
 
-    const queryAlumno = 'SELECT * FROM speedmentoring_alumno WHERE alumnoid = ?';
+    const queryAlumno = 'SELECT * FROM SpeedMentoring_Alumno WHERE alumnoid = ?';
     connection.query(queryAlumno, [user], (error, results) => {
+
       if (error) {
         console.error('Error en la consulta de inicio de sesión (alumno):', error.stack);
         res.status(500).json({ message: 'Error en la consulta de inicio de sesión (alumno)' });
@@ -23,7 +24,7 @@ const login = (req, res) => {
 
       if (results.length === 0) {
         // Si no se encuentra al alumno, buscar en la tabla de mentores
-        const queryMentor = 'SELECT * FROM speedmentoring_mentor WHERE mentorrfc = ?';
+        const queryMentor = 'SELECT * FROM SpeedMentoring_Mentor WHERE mentorrfc = ?';
         connection.query(queryMentor, [user], (error, results) => {
           if (error) {
             console.error('Error en la consulta de inicio de sesión (mentor):', error.stack);
@@ -37,8 +38,8 @@ const login = (req, res) => {
           } else {
             const mentor = results[0];
 
-            if (password === mentor.hash) {
-              res.json({ success: true, userType: 'mentor', userId: mentor.mentorrfc , message: 'Inicio de sesión exitoso' });
+            if (password === mentor.HASH) {
+              res.json({ success: true, userType: 'mentor', userId: mentor.MentorRFC, specialty: mentor.EspecialidadID , message: 'Inicio de sesión exitoso' });
             } else {
               res.status(401).json({ message: 'Contraseña incorrecta' });
             }
@@ -49,8 +50,8 @@ const login = (req, res) => {
       } else {
         const alumno = results[0];
 
-        if (password === alumno.password) {
-          res.json({ success: true, userType: 'student', userId: alumno.alumnoid , message: 'Inicio de sesión exitoso' });
+        if (password === alumno.Password) {
+          res.json({ success: true, userType: 'student', userId: alumno.AlumnoID, specialty: alumno.EspecialidadID , message: 'Inicio de sesión exitoso' });
         } else {
           res.status(401).json({ message: 'Contraseña incorrecta' });
         }
