@@ -1,10 +1,10 @@
-const pool = require('../config/db');
-const { sendEmail } = require('../services/emailService');
+import { getConnection } from '../config/db';
+import { sendEmail } from '../services/emailService';
 
 const searchEmail = (req, res) => {
   const { id } = req.body;
 
-  pool.getConnection((err, connection) => {
+  getConnection((err, connection) => {
     if (err) {
       console.error('Error al obtener la conexión a la base de datos:', err.stack);
       res.status(500).json({ message: 'Error al obtener la conexión a la base de datos' });
@@ -83,4 +83,4 @@ const searchEmail = (req, res) => {
   });
 };
 
-module.exports = { searchEmail };
+export default { searchEmail };

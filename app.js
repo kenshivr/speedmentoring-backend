@@ -24,10 +24,11 @@ const app = express();
 const port = 3001;
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(json());
 
 app.use('/api', loginRoutes);
 app.use('/api', searchRoutes);
+
 app.use('/api', updateProfileRoutes);
 app.use('/api', getSpecialties);
 app.use('/api', changePass);

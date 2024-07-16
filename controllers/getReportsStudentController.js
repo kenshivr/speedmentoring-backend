@@ -1,4 +1,4 @@
-const pool = require('../config/db');
+import { getConnection } from '../config/db';
 
 const getReportBySesionId = (req, res) => {
   const { sesionId } = req.params;
@@ -51,7 +51,7 @@ const setReportBySesionId = (req, res) => {
   console.log('Aqui mostramos el texto en setReportBySesionId', texto);
   console.log('Aqui mostramos el fecha en setReportBySesionId', fecha);
 
-  pool.getConnection((err, connection) => {
+  getConnection((err, connection) => {
     if (err) {
       console.error('Error al obtener la conexión a la base de datos:', err.stack);
       res.status(500).json({ message: 'Error en la conexión a la base de datos' });
@@ -127,4 +127,4 @@ const setReportBySesionId = (req, res) => {
   });
 };
 
-module.exports = { getReportBySesionId, setReportBySesionId };
+export default { getReportBySesionId, setReportBySesionId };

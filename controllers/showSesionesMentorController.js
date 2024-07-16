@@ -1,4 +1,4 @@
-const pool = require('../config/db'); // Asumiendo que `pool` es tu configuración de conexión a la base de datos
+import { getConnection } from '../config/db'; // Asumiendo que `pool` es tu configuración de conexión a la base de datos
 
 const showSesionesMentorController = (req, res) => {
   const mentorId = req.params.id; // Obtiene el id del mentor desde los parámetros de la URL
@@ -14,7 +14,7 @@ const showSesionesMentorController = (req, res) => {
   `;
 
   // Ejecutar la consulta usando el pool de conexiones
-  pool.getConnection((err, connection) => {
+  getConnection((err, connection) => {
     if (err) {
       console.error('Error al obtener la conexión a la base de datos', err);
       res.status(500).json({ message: 'Error en la conexión a la base de datos' });
@@ -40,4 +40,4 @@ const showSesionesMentorController = (req, res) => {
   });
 };
 
-module.exports = showSesionesMentorController;
+export default showSesionesMentorController;

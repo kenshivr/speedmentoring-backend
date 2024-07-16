@@ -4,4 +4,4 @@ const router = express.Router();
 
 router.get("/getStudent/:id", getStudent);
 
-module.exports = router;
+export default router;

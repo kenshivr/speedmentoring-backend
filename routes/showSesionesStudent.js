@@ -4,4 +4,4 @@ const showSesionesStudentController = require('../controllers/showSesionesStuden
 
 router.get('/showSesionesStudent/:id', showSesionesStudentController);
 
-module.exports = router;
+export default router;

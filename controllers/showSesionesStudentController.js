@@ -42,4 +42,4 @@ const showSesionesStudentController = (req, res) => {
   });
 };
 
-module.exports = showSesionesStudentController;
+export default showSesionesStudentController;

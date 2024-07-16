@@ -1,9 +1,9 @@
-const pool = require('../config/db');
+import { getConnection } from '../config/db';
 
 const changePass = (req, res) => {
   const { userId, currentPassword, newPassword } = req.body;
 
-  pool.getConnection((err, connection) => {
+  getConnection((err, connection) => {
     if (err) {
       console.error('Error al obtener la conexión a la base de datos:', err.stack);
       res.status(500).json({ message: 'Error en la conexión a la base de datos' });
@@ -43,4 +43,4 @@ const changePass = (req, res) => {
   });
 };
 
-module.exports = { changePass };
+export default { changePass };

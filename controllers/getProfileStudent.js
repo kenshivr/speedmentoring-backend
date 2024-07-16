@@ -3,7 +3,7 @@ const pool = require('../config/db');
 const getStudent = (req, res) => {
   const studentId = req.params.id;
 
-  pool.getConnection((err, connection) => {
+  getConnection((err, connection) => {
     if (err) {
       console.error("Error en la conexión a la base de datos (perfil estudiante)", err.stack);
       res.status(500).json({ message: "Error en la conexión a la base de datos (perfil estudiante)" });

@@ -1,7 +1,7 @@
-const express = require('express');
-const { changePass } = require('../controllers/changePasswordMentorController');
-const router = express.Router();
+import { Router } from 'express';
+const router = Router();
+const { changePass } = require('../controllers/changePasswordMentorController').default;
 
 router.put('/changePassMentor', changePass);
 
-module.exports = router;
+export default router;
