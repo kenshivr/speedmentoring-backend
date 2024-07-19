@@ -6,4 +6,4 @@ const router = express.Router();
 router.get('/getReportStudent/:sesionId', getReportBySesionId);
 router.post('/setReportStudent/:sesionId', setReportBySesionId);
 
-export default router;
+module.exports = router;

@@ -1,7 +1,7 @@
-import express from 'express';
-import { searchEmail } from '../controllers/searchController';
+const express = require('express');
+const { searchEmail } = require('../controllers/searchController');
 const router = express.Router();
 
 router.post('/buscar', searchEmail);
 
-export default router;
+module.exports = router;

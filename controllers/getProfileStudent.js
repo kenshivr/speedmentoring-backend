@@ -1,17 +1,16 @@
-import { getConnection } from '../config/db'; // Asegúrate de que la ruta al archivo de configuración de la base de datos sea correcta
+const pool = require('../config/db');
 
-// Endpoint para obtener el perfil del estudiante
 const getStudent = (req, res) => {
   const studentId = req.params.id;
 
-  getConnection((err, connection) => {
+  pool.getConnection((err, connection) => {
     if (err) {
       console.error("Error en la conexión a la base de datos (perfil estudiante)", err.stack);
       res.status(500).json({ message: "Error en la conexión a la base de datos (perfil estudiante)" });
       return;
     }
 
-    const query = 'SELECT nombre, periodo, especialidad FROM speedmentoring_alumno WHERE alumnoid = ?';
+    const query = 'SELECT a.Nombre, a.Periodo, e.Especialidad FROM SpeedMentoring_Alumno a JOIN Especialidad e ON a.EspecialidadID = e.EspecialidadID WHERE a.alumnoid = ? ';
 
     connection.query(query, studentId, (error, results) => {
       connection.release();
@@ -32,35 +31,4 @@ const getStudent = (req, res) => {
   });
 };
 
-// Función para actualizar la especialidad del estudiante
-const updateStudentEspecialidad = (req, res) => {
-  const studentId = req.params.id;
-  const { especialidad } = req.body;
-
-  const query = 'UPDATE speedmentoring_alumno SET especialidad = ? WHERE alumnoid = ?';
-
-  getConnection((err, connection) => {
-    if (err) {
-      console.error("Error en la conexión a la base de datos (actualización de especialidad)", err.stack);
-      res.status(500).json({ message: "Error en la conexión a la base de datos (actualización de especialidad)" });
-      return;
-    }
-
-    connection.query(query, [especialidad, studentId], (error, results) => {
-      connection.release();
-
-      if (error) {
-        console.error("Error al actualizar la especialidad del estudiante en la base de datos", error);
-        res.status(500).json({ message: "Error al actualizar la especialidad del estudiante en la base de datos" });
-        return;
-      }
-
-      res.json({ message: "Especialidad actualizada correctamente" });
-    });
-  });
-};
-
-export default {
-  getStudent,
-  updateStudentEspecialidad
-};
+module.exports = { getStudent };

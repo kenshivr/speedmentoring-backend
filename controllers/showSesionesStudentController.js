@@ -1,19 +1,19 @@
-import { getConnection } from '../config/db'; // Asumiendo que `pool` es tu configuración de conexión a la base de datos
+const pool = require('../config/db'); 
 
 const showSesionesStudentController = (req, res) => {
-  const studentId = req.params.id; // Obtiene el id del mentor desde los parámetros de la URL
+  const studentId = req.params.id; 
 
-  // Consulta SQL para obtener las sesiones del mentor con su información
   const query = `
-    SELECT s.fecha, a.nombre, r.reporteid, s.sesionid 
-    FROM speedmentoring_sesionesmentoria s
-    INNER JOIN speedmentoring_alumno a ON s.alumnoid = a.alumnoid
-    LEFT JOIN speedmentoring_reportes r ON s.sesionid = r.sesionid
+    SELECT s.fecha, r.reporteid, s.sesionid, 
+    CONCAT(m.nombre, ' ', m.apellidopaterno, ' ', m.apellidomaterno) AS nombre
+    FROM SpeedMentoring_SesionesMentoria s
+    INNER JOIN SpeedMentoring_Alumno a ON s.alumnoid = a.alumnoid
+    LEFT JOIN SpeedMentoring_Reportes r ON s.sesionid = r.sesionid
+    INNER JOIN SpeedMentoring_Mentor m ON s.mentorrfc = m.mentorrfc
     WHERE a.alumnoid = ? ;
   `;
 
-  // Ejecutar la consulta usando el pool de conexiones
-  getConnection((err, connection) => {
+  pool.getConnection((err, connection) => {
     if (err) {
       console.error('Error al obtener la conexión a la base de datos', err);
       res.status(500).json({ message: 'Error en la conexión a la base de datos' });
@@ -21,7 +21,7 @@ const showSesionesStudentController = (req, res) => {
     }
 
     connection.query(query, [studentId], (error, results) => {
-      connection.release(); // Liberar la conexión después de la consulta
+      connection.release();
 
       if (error) {
         console.error('Error en la consulta (estudiante: sesiones)', error);
@@ -34,9 +34,9 @@ const showSesionesStudentController = (req, res) => {
         return;
       }
 
-      res.json({ success: true, data: results }); // Enviar los resultados al frontend
+      res.json({ success: true, data: results });
     });
   });
 };
 
-export default showSesionesStudentController;
+module.exports = showSesionesStudentController;

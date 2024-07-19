@@ -4,4 +4,4 @@ const showSesionesMentorController = require('../controllers/showSesionesMentorC
 
 router.get('/showSesionesMentor/:id', showSesionesMentorController);
 
-export default router;
+module.exports = router;

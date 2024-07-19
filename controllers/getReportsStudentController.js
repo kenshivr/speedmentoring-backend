@@ -1,10 +1,9 @@
-import { getConnection } from '../config/db';
+const pool = require('../config/db');
 
-// Función para obtener detalles de una sesión y, si existe, el reporte asociado
 const getReportBySesionId = (req, res) => {
   const { sesionId } = req.params;
 
-  getConnection((err, connection) => {
+  pool.getConnection((err, connection) => {
     if (err) {
       console.error('Error al obtener la conexión a la base de datos:', err.stack);
       res.status(500).json({ message: 'Error en la conexión a la base de datos' });
@@ -12,13 +11,13 @@ const getReportBySesionId = (req, res) => {
     }
 
     const query = `
-      SELECT s.fecha, CONCAT (m.nombre, ' ', m.apellidopaterno, ' ', m.apellidomaterno) AS nombre, s.evaluacionhaciamentor AS calificacion, r.textoexplicativo AS texto        
-      FROM speedmentoring_sesionesmentoria s 
-      JOIN speedmentoring_mentor m 
-      ON s.mentorrfc = m.mentorrfc        
-      LEFT JOIN speedmentoring_reportes r 
-      ON s.sesionid = r.sesionid 
-      WHERE s.sesionid = ? ;
+      SELECT s.fecha, CONCAT (m.nombre, ' ', m.apellidopaterno, ' ', m.apellidomaterno) AS nombre, r.TextoExplicativo AS texto        
+	    FROM SpeedMentoring_SesionesMentoria s 
+	    JOIN SpeedMentoring_Mentor m 
+	    ON s.mentorrfc = m.mentorrfc        
+	    LEFT JOIN SpeedMentoring_Reportes r 
+	    ON s.sesionid = r.sesionid 
+	    WHERE s.sesionid = ? ;
     `;
 
     connection.query(query, [sesionId], (error, results) => {
@@ -40,12 +39,11 @@ const getReportBySesionId = (req, res) => {
   });
 };
 
-// Función para crear o actualizar un reporte
 const setReportBySesionId = (req, res) => {
   const { sesionId } = req.params;
-  const { texto, calificacion, fecha } = req.body;
-
-  getConnection((err, connection) => {
+  const { texto, fecha } = req.body;
+  
+  pool.getConnection((err, connection) => {
     if (err) {
       console.error('Error al obtener la conexión a la base de datos:', err.stack);
       res.status(500).json({ message: 'Error en la conexión a la base de datos' });
@@ -54,9 +52,9 @@ const setReportBySesionId = (req, res) => {
 
     // Primero, intentamos actualizar un reporte existente
     const updateQuery = `
-      UPDATE speedmentoring_reportes
-      SET textoexplicativo = ?
-      WHERE sesionid = ?
+      UPDATE SpeedMentoring_Reportes 
+      SET TextoExplicativo = ? 
+      WHERE sesionid = ? ;
     `;
 
     connection.query(updateQuery, [texto, sesionId], (updateError, updateResults) => {
@@ -69,58 +67,56 @@ const setReportBySesionId = (req, res) => {
 
       if (updateResults.affectedRows === 0) {
         // Si no se encontró un reporte para actualizar, creamos uno nuevo
-        const insertQuery = `
-          INSERT INTO speedmentoring_reportes (sesionid, fecha, textoexplicativo)
-          VALUES (?, ?, ?)
+        
+        // Consulta para obtener el último reporteid
+        const getLastReportIdQuery = `
+          SELECT reporteid FROM SpeedMentoring_Reportes
+          ORDER BY reporteid DESC
+          LIMIT 1;
         `;
-
-        connection.query(insertQuery, [sesionId, fecha, texto], (insertError, insertResults) => {
-          if (insertError) {
+        
+        connection.query(getLastReportIdQuery, (getLastReportIdError, getLastReportIdResults) => {
+          if (getLastReportIdError) {
             connection.release();
-            console.error('Error al insertar el reporte:', insertError.stack);
-            res.status(500).json({ message: 'Error al insertar el reporte' });
+            console.error('Error al obtener el último reporteid:', getLastReportIdError.stack);
+            res.status(500).json({ message: 'Error al obtener el último reporteid' });
             return;
           }
 
-          const updateSesionQuery = `
-            UPDATE speedmentoring_sesionesmentoria
-            SET evaluacionhaciamentor = ?
-            WHERE sesionid = ?
+          let lastReportId = 1; // Valor inicial por defecto si no hay registros previos
+
+          if (getLastReportIdResults.length > 0) {
+            lastReportId = getLastReportIdResults[0].reporteid;
+          }
+
+          // Incrementar lastReportId para obtener el siguiente reporteid
+          const newReportId = lastReportId + 1;
+
+          // Query para insertar un nuevo reporte con el nuevo reporteid
+          const insertQuery = `
+            INSERT INTO SpeedMentoring_Reportes (SesionID, Fecha, TextoExplicativo, reporteid)
+            VALUES (?, ?, ?, ?);
           `;
 
-          connection.query(updateSesionQuery, [calificacion, sesionId], (updateSesionError, updateSesionResults) => {
+          connection.query(insertQuery, [sesionId, fecha, texto, newReportId], (insertError, insertResults) => {
             connection.release();
-            if (updateSesionError) {
-              console.error('Error al actualizar la sesión:', updateSesionError.stack);
-              res.status(500).json({ message: 'Error al actualizar la sesión' });
+            if (insertError) {
+              console.error('Error al insertar el reporte:', insertError.stack);
+              res.status(500).json({ message: 'Error al insertar el reporte' });
               return;
             }
 
-            res.json({ success: true, message: 'Reporte creado y sesión actualizada' });
+            res.status(200).json({ success: true, message: 'Nuevo reporte creado exitosamente', newReportId });
           });
         });
 
       } else {
-        const updateSesionQuery = `
-          UPDATE speedmentoring_sesionesmentoria
-          SET evaluacionhaciamentor = ?
-          WHERE sesionid = ?
-        `;
-
-        connection.query(updateSesionQuery, [calificacion, sesionId], (updateSesionError, updateSesionResults) => {
-          connection.release();
-          if (updateSesionError) {
-            console.error('Error al actualizar la sesión:', updateSesionError.stack);
-            res.status(500).json({ message: 'Error al actualizar la sesión' });
-            return;
-          }
-
-          res.json({ success: true, message: 'Reporte actualizado y sesión actualizada' });
-        });
-        
+        res.json({ success: true, message: 'Reporte actualizado exitosamente' });
       }
+
     });
+
   });
 };
 
-export default { getReportBySesionId, setReportBySesionId };
+module.exports = { getReportBySesionId, setReportBySesionId };

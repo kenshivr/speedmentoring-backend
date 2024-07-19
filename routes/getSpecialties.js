@@ -4,4 +4,4 @@ const router = express.Router();
 
 router.get("/getSpecialties", getSpecialties);
 
-export default router;
+module.exports = router;

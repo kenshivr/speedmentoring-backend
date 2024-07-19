@@ -1,8 +1,8 @@
-import { getConnection } from '../config/db'; // Conexión a la base de datos
+const pool = require('../config/db'); // Conexión a la base de datos
 
 // Endpoint para obtener todas las especialidades
 const getSpecialties = (req, res) => {
-  getConnection((err, connection) => {
+  pool.getConnection((err, connection) => {
     if (err) {
       console.error("Error en la conexión a la base de datos", err.stack);
       res.status(500).json({ message: "Error en la conexión a la base de datos" });
@@ -30,4 +30,4 @@ const getSpecialties = (req, res) => {
   });
 };
 
-export default { getSpecialties };
+module.exports = { getSpecialties };
