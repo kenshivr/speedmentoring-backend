@@ -1,6 +1,6 @@
 const pool = require('../config/db');
 
-const getEventsFull = (req, res) => {
+const getEspecialties = (req, res) => {
 
   pool.getConnection((err, connection) => {
     if (err) {
@@ -9,16 +9,7 @@ const getEventsFull = (req, res) => {
       return;
     }
 
-    const query = `
-    SELECT 
-      Eventos.EventoID, Eventos.Nombre, Especialidad.Especialidad, Eventos.Descripción, Eventos.Fecha, Eventos.Link 
-    FROM 
-      Eventos 
-    JOIN 
-      Especialidad 
-    ON 
-      Eventos.EspecialidadID = Especialidad.EspecialidadID
-    `
+    const query = 'SELECT Especialidad FROM Especialidad';
 
     connection.query(query, (error, results) => {
       connection.release();
@@ -34,10 +25,9 @@ const getEventsFull = (req, res) => {
         return;
       }
 
-      console.log(results);
       res.json(results);
     });
   });
 };
 
-module.exports = { getEventsFull };
+module.exports = { getEspecialties };

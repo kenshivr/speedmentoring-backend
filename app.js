@@ -21,6 +21,8 @@ const getEventsStudent = require('./routes/getEventsStudent');
 const getEventsFull = require('./routes/getEventsFull');
 const changePasswordStudent = require('./routes/changePasswordStudent');
 
+const getEspecialtiesAdmin = require('./routes/getEspecialtiesAdmin.js');
+
 const app = express();
 const port = 3001;
 
@@ -42,6 +44,8 @@ app.use('/api', getReportsStudentRoutes);
 app.use('/api', getEventsStudent);
 app.use('/api', changePasswordStudent);
 app.use('/api', getEventsFull);
+// Admin
+app.use('/api', getEspecialtiesAdmin);
 
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
