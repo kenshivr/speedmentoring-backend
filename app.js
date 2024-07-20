@@ -7,11 +7,12 @@ const db = require('./config/db');
 const loginRoutes = require('./routes/login');
 const searchRoutes = require('./routes/search');
 
-const updateProfileRoutes = require('./routes/updateMentor');
+const updateProfileMentor = require('./routes/updateProfileMentor.js');
 const getSpecialties = require('./routes/getSpecialties');
 const changePass = require('./routes/changePasswordMentor');
 const showSesionesMentorRoutes = require('./routes/showSesionesMentor');
 const getReportsMentorRoutes = require('./routes/getReportsMentor');
+const getProfileMentor = require('./routes/getProfileMentor');
 
 const getProfileStudent = require('./routes/getProfileStudent');
 const showSesionesStudentRoutes = require('./routes/showSesionesStudent');
@@ -25,15 +26,16 @@ const port = 3001;
 
 app.use(cors());
 app.use(bodyParser.json());
-
+// Mentor
 app.use('/api', loginRoutes);
 app.use('/api', searchRoutes);
-app.use('/api', updateProfileRoutes);
+app.use('/api', updateProfileMentor);
 app.use('/api', getSpecialties);
 app.use('/api', changePass);
 app.use('/api', showSesionesMentorRoutes);
 app.use('/api', getReportsMentorRoutes);
-
+app.use('/api', getProfileMentor);
+// Student
 app.use('/api', getProfileStudent);
 app.use('/api', showSesionesStudentRoutes);
 app.use('/api', getReportsStudentRoutes);
