@@ -1,5 +1,5 @@
 const express = require('express');
-const { getEspecialties } = require('../controllers/getEspecialtiesAdminController');
+const { getEspecialties } = require('../controllers/getSpecialtiesAdmin');
 const router = express.Router();
 
 router.get('/especialidades', getEspecialties);

@@ -1,51 +1,70 @@
+// Necesarios para el servidor backend
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+// Configuracion de la base de datos
 const db = require('./config/db');
 
+// Paginas de logeo y reestablecimiento de contraseña
 const loginRoutes = require('./routes/login');
 const searchRoutes = require('./routes/search');
 
-const updateProfileMentor = require('./routes/updateProfileMentor.js');
-const getSpecialties = require('./routes/getSpecialties');
-const changePass = require('./routes/changePasswordMentor');
-const showSesionesMentorRoutes = require('./routes/showSesionesMentor');
-const getReportsMentorRoutes = require('./routes/getReportsMentor');
+// Paginas de mentores
 const getProfileMentor = require('./routes/getProfileMentor');
+const getReportsMentor = require('./routes/getReportsMentor');
+const getSpecialtiesMentor = require('./routes/getSpecialties');
+const changePassMentor = require('./routes/changePassMentor');
+const showSesionesMentor = require('./routes/showSesionesMentor');
+const updateProfileMentor = require('./routes/updateProfileMentor.js');
 
-const getProfileStudent = require('./routes/getProfileStudent');
-const showSesionesStudentRoutes = require('./routes/showSesionesStudent');
-const getReportsStudentRoutes = require('./routes/getReportsStudent');
-const getEventsStudent = require('./routes/getEventsStudent');
+// Paginas de estudiantes
 const getEventsFull = require('./routes/getEventsFull');
-const changePasswordStudent = require('./routes/changePasswordStudent');
+const getEventsStudent = require('./routes/getEventsStudent');
+const getProfileStudent = require('./routes/getProfileStudent');
+const getReportsStudent = require('./routes/getReportsStudent');
+const changePassStudent = require('./routes/changePassStudent.js');
+const showSesionesStudent = require('./routes/showSesionesStudent');
+const getSpecialtyStudent = require('./routes/getSpecialtyStudent.js');
 
-const getEspecialtiesAdmin = require('./routes/getEspecialtiesAdmin.js');
+// Paginas de administradores
+const getEventAdmin = require('./routes/getEventAdmin.js');
+const newEventAdmin = require('./routes/newEventAdmin.js');
+const updateEventAdmin = require('./routes/updateEventAdmin.js');
+const getSpecialtiesAdmin = require('./routes/getSpecialtiesAdmin.js');
 
 const app = express();
 const port = 3001;
 
 app.use(cors());
 app.use(bodyParser.json());
-// Mentor
+
 app.use('/api', loginRoutes);
 app.use('/api', searchRoutes);
-app.use('/api', updateProfileMentor);
-app.use('/api', getSpecialties);
-app.use('/api', changePass);
-app.use('/api', showSesionesMentorRoutes);
-app.use('/api', getReportsMentorRoutes);
+
+// Mentor
 app.use('/api', getProfileMentor);
-// Student
-app.use('/api', getProfileStudent);
-app.use('/api', showSesionesStudentRoutes);
-app.use('/api', getReportsStudentRoutes);
-app.use('/api', getEventsStudent);
-app.use('/api', changePasswordStudent);
+app.use('/api', getReportsMentor);
+app.use('/api', changePassMentor);
+app.use('/api', showSesionesMentor);
+app.use('/api', updateProfileMentor);
+app.use('/api', updateProfileMentor);
+app.use('/api', getSpecialtiesMentor);
+
+// Estudiante
 app.use('/api', getEventsFull);
-// Admin
-app.use('/api', getEspecialtiesAdmin);
+app.use('/api', getEventsStudent);
+app.use('/api', getProfileStudent);
+app.use('/api', getReportsStudent);
+app.use('/api', changePassStudent);
+app.use('/api', showSesionesStudent);
+app.use('/api', getSpecialtyStudent);
+
+// Administrador
+app.use('/api', getEventAdmin);
+app.use('/api', newEventAdmin);
+app.use('/api', updateEventAdmin);
+app.use('/api', getSpecialtiesAdmin);
 
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);

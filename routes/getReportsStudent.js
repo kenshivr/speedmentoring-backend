@@ -1,5 +1,5 @@
 const express = require('express');
-const { getReportBySesionId, setReportBySesionId } = require('../controllers/getReportsStudentController');
+const { getReportBySesionId, setReportBySesionId } = require('../controllers/getReportsStudent');
 
 const router = express.Router();
 

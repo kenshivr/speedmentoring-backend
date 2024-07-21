@@ -11,7 +11,7 @@ const searchEmail = (req, res) => {
       return;
     }
 
-    const queryAlumno = 'SELECT * FROM SpeedMentoring_Alumno WHERE alumnoid = ? ';
+    const queryAlumno = 'SELECT * FROM SpeedMentoring_Alumno WHERE AlumnoID = ? ';
     connection.query(queryAlumno, [id], (error, resultsAlumno) => {
       if (error) {
         console.error('Error en la consulta (alumno):', error.stack);

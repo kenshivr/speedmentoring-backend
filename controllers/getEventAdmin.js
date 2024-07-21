@@ -1,6 +1,7 @@
 const pool = require('../config/db');
 
-const getEventsFull = (req, res) => {
+const getEvent = (req, res) => {
+  const eventId  = req.params.eventId;
 
   pool.getConnection((err, connection) => {
     if (err) {
@@ -11,16 +12,18 @@ const getEventsFull = (req, res) => {
 
     const query = `
     SELECT 
-      Eventos.EventoID, Eventos.Nombre, Especialidad.Especialidad, Eventos.Descripción, Eventos.Fecha, Eventos.Link 
+      Eventos.*, Especialidad.Especialidad 
     FROM 
       Eventos 
     JOIN 
       Especialidad 
     ON 
-      Eventos.EspecialidadID = Especialidad.EspecialidadID
+      Eventos.EspecialidadID = Especialidad.EspecialidadID 
+    WHERE 
+      Eventos.EventoID = ?
     `
 
-    connection.query(query, (error, results) => {
+    connection.query(query, eventId, (error, results) => {
       connection.release();
 
       if (error) {
@@ -34,9 +37,9 @@ const getEventsFull = (req, res) => {
         return;
       }
 
-      res.json(results);
+      res.json(results[0]);
     });
   });
 };
 
-module.exports = { getEventsFull };
+module.exports = { getEvent };
