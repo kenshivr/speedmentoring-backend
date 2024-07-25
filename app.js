@@ -17,6 +17,7 @@ const getSpecialtiesMentor = require('./routes/getSpecialties');
 const changePassMentor = require('./routes/changePassMentor');
 const showSesionesMentor = require('./routes/showSesionesMentor');
 const updateProfileMentor = require('./routes/updateProfileMentor.js');
+const getMentors = require('./routes/getMentors.js');
 
 // Paginas de estudiantes
 const getEventsFull = require('./routes/getEventsFull');
@@ -26,6 +27,7 @@ const getReportsStudent = require('./routes/getReportsStudent');
 const changePassStudent = require('./routes/changePassStudent.js');
 const showSesionesStudent = require('./routes/showSesionesStudent');
 const getSpecialtyStudent = require('./routes/getSpecialtyStudent.js');
+const getStudents = require('./routes/getStudents.js');
 
 // Paginas de administradores
 const getEventAdmin = require('./routes/getEventAdmin.js');
@@ -50,6 +52,7 @@ app.use('/api', showSesionesMentor);
 app.use('/api', updateProfileMentor);
 app.use('/api', updateProfileMentor);
 app.use('/api', getSpecialtiesMentor);
+app.use('/api', getMentors);
 
 // Estudiante
 app.use('/api', getEventsFull);
@@ -59,6 +62,7 @@ app.use('/api', getReportsStudent);
 app.use('/api', changePassStudent);
 app.use('/api', showSesionesStudent);
 app.use('/api', getSpecialtyStudent);
+app.use('/api', getStudents);
 
 // Administrador
 app.use('/api', getEventAdmin);
