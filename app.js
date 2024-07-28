@@ -34,6 +34,8 @@ const getEventAdmin = require('./routes/getEventAdmin.js');
 const newEventAdmin = require('./routes/newEventAdmin.js');
 const updateEventAdmin = require('./routes/updateEventAdmin.js');
 const getSpecialtiesAdmin = require('./routes/getSpecialtiesAdmin.js');
+const importUsersAdmin = require('./routes/importUsers.js');
+const newUsers = require('./routes/newUsers.js');
 
 const app = express();
 const port = 3001;
@@ -69,6 +71,8 @@ app.use('/api', getEventAdmin);
 app.use('/api', newEventAdmin);
 app.use('/api', updateEventAdmin);
 app.use('/api', getSpecialtiesAdmin);
+app.use('/api', importUsersAdmin);
+app.use('/api', newUsers);
 
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);

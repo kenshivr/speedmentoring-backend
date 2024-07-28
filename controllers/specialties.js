@@ -9,7 +9,7 @@ const getSpecialties = (req, res) => {
       return;
     }
 
-    const query = 'SELECT especialidad FROM speedmentoring_mentor';
+    const query = 'SELECT * FROM Especialidad';
 
     connection.query(query, (error, results) => {
       connection.release();
