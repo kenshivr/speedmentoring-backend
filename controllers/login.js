@@ -11,7 +11,7 @@ const login = (req, res) => {
     }
 
     // Consulta en la tabla de alumnos
-    const queryAlumno = 'SELECT * FROM SpeedMentoring_Alumno WHERE alumnoid = ?';
+    const queryAlumno = 'SELECT * FROM Estudiante WHERE EstudianteID = ?';
     connection.query(queryAlumno, [user], (error, results) => {
       if (error) {
         console.error('Error en la consulta de inicio de sesión (alumno):', error.stack);
@@ -22,7 +22,7 @@ const login = (req, res) => {
 
       if (results.length === 0) {
         // Si no se encuentra al alumno, buscar en la tabla de mentores
-        const queryMentor = 'SELECT * FROM SpeedMentoring_Mentor WHERE mentorrfc = ?';
+        const queryMentor = 'SELECT * FROM Mentor WHERE RFC = ?';
         connection.query(queryMentor, [user], (error, results) => {
           if (error) {
             console.error('Error en la consulta de inicio de sesión (mentor):', error.stack);
@@ -33,7 +33,7 @@ const login = (req, res) => {
 
           if (results.length === 0) {
             // Si no se encuentra al mentor, buscar en la tabla de administradores
-            const queryAdmin = 'SELECT * FROM SpeedMentoring_Admin WHERE Admin = ?';
+            const queryAdmin = 'SELECT * FROM Administrador WHERE AdminID = ?';
             connection.query(queryAdmin, [user], (error, results) => {
               if (error) {
                 console.error('Error en la consulta de inicio de sesión (admin):', error.stack);
@@ -59,8 +59,8 @@ const login = (req, res) => {
           } else {
             const mentor = results[0];
 
-            if (password === mentor.HASH) {
-              res.json({ success: true, userType: 'mentor', userId: mentor.MentorRFC, specialty: mentor.EspecialidadID, message: 'Inicio de sesión exitoso' });
+            if (password === mentor.PasswordHash) {
+              res.json({ success: true, userType: 'mentor', userId: mentor.RFC, specialty: mentor.EspecialidadID, message: 'Inicio de sesión exitoso' });
             } else {
               res.status(401).json({ message: 'Contraseña incorrecta' });
             }
@@ -71,8 +71,8 @@ const login = (req, res) => {
       } else {
         const alumno = results[0];
 
-        if (password === alumno.Password) {
-          res.json({ success: true, userType: 'student', userId: alumno.AlumnoID, specialty: alumno.EspecialidadID, message: 'Inicio de sesión exitoso' });
+        if (password === alumno.PasswordHash) {
+          res.json({ success: true, userType: 'student', userId: alumno.EstudianteID, specialty: alumno.EspecialidadID, message: 'Inicio de sesión exitoso' });
         } else {
           res.status(401).json({ message: 'Contraseña incorrecta' });
         }

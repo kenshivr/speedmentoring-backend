@@ -11,13 +11,13 @@ const getReportBySesionId = (req, res) => {
     }
 
     const query = `
-      SELECT s.fecha, CONCAT (m.nombre, ' ', m.apellidopaterno, ' ', m.apellidomaterno) AS nombre, r.TextoExplicativo AS texto        
-	    FROM SpeedMentoring_SesionesMentoria s 
-	    JOIN SpeedMentoring_Mentor m 
-	    ON s.mentorrfc = m.mentorrfc        
-	    LEFT JOIN SpeedMentoring_Reportes r 
-	    ON s.sesionid = r.sesionid 
-	    WHERE s.sesionid = ? ;
+      SELECT s.Fecha AS fecha, CONCAT(m.Nombre, ' ', m.ApellidoPaterno, ' ', m.ApellidoMaterno) AS nombre, r.TextoExplicativo AS texto        
+      FROM Sesiones s 
+      JOIN Mentor m 
+      ON s.MentorRFC = m.RFC        
+      LEFT JOIN Reportes r 
+      ON s.SesionID = r.SesionID 
+      WHERE s.SesionID = ? ;
     `;
 
     connection.query(query, [sesionId], (error, results) => {
@@ -30,9 +30,8 @@ const getReportBySesionId = (req, res) => {
       }
 
       if (results.length === 0) {
-        res.status(404).json({ message: 'Sesión no encontradaaa' });
+        res.status(404).json({ message: 'Sesión no encontrada' });
       } else {
-
         res.json({ success: true, data: results[0] });
       }
     });
@@ -52,12 +51,12 @@ const setReportBySesionId = (req, res) => {
 
     // Primero, intentamos actualizar un reporte existente
     const updateQuery = `
-      UPDATE SpeedMentoring_Reportes 
-      SET TextoExplicativo = ? 
-      WHERE sesionid = ? ;
+      UPDATE Reportes 
+      SET TextoExplicativo = ?, Fecha = ? 
+      WHERE SesionID = ? ;
     `;
 
-    connection.query(updateQuery, [texto, sesionId], (updateError, updateResults) => {
+    connection.query(updateQuery, [texto, fecha, sesionId], (updateError, updateResults) => {
       if (updateError) {
         connection.release();
         console.error('Error al actualizar el reporte:', updateError.stack);
@@ -67,34 +66,34 @@ const setReportBySesionId = (req, res) => {
 
       if (updateResults.affectedRows === 0) {
         // Si no se encontró un reporte para actualizar, creamos uno nuevo
-        
-        // Consulta para obtener el último reporteid
+
+        // Consulta para obtener el último ReporteID
         const getLastReportIdQuery = `
-          SELECT reporteid FROM SpeedMentoring_Reportes
-          ORDER BY reporteid DESC
+          SELECT ReporteID FROM Reportes
+          ORDER BY ReporteID DESC
           LIMIT 1;
         `;
         
         connection.query(getLastReportIdQuery, (getLastReportIdError, getLastReportIdResults) => {
           if (getLastReportIdError) {
             connection.release();
-            console.error('Error al obtener el último reporteid:', getLastReportIdError.stack);
-            res.status(500).json({ message: 'Error al obtener el último reporteid' });
+            console.error('Error al obtener el último ReporteID:', getLastReportIdError.stack);
+            res.status(500).json({ message: 'Error al obtener el último ReporteID' });
             return;
           }
 
-          let lastReportId = 1; // Valor inicial por defecto si no hay registros previos
+          let lastReportId = 0; // Valor inicial por defecto si no hay registros previos
 
           if (getLastReportIdResults.length > 0) {
-            lastReportId = getLastReportIdResults[0].reporteid;
+            lastReportId = getLastReportIdResults[0].ReporteID;
           }
 
-          // Incrementar lastReportId para obtener el siguiente reporteid
+          // Incrementar lastReportId para obtener el siguiente ReporteID
           const newReportId = lastReportId + 1;
 
-          // Query para insertar un nuevo reporte con el nuevo reporteid
+          // Query para insertar un nuevo reporte con el nuevo ReporteID
           const insertQuery = `
-            INSERT INTO SpeedMentoring_Reportes (SesionID, Fecha, TextoExplicativo, reporteid)
+            INSERT INTO Reportes (SesionID, Fecha, TextoExplicativo, ReporteID)
             VALUES (?, ?, ?, ?);
           `;
 

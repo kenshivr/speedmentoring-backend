@@ -1,16 +1,20 @@
-const pool = require('../config/db'); 
+const pool = require('../config/db');
 
-const showSesionesStudentController = (req, res) => {
-  const studentId = req.params.id; 
+const getSesionesWithMentorAndReport = (req, res) => {
+  const studentId = req.params.id;
 
   const query = `
-    SELECT s.fecha, r.reporteid, s.sesionid, 
-    CONCAT(m.nombre, ' ', m.apellidopaterno, ' ', m.apellidomaterno) AS nombre
-    FROM SpeedMentoring_SesionesMentoria s
-    INNER JOIN SpeedMentoring_Alumno a ON s.alumnoid = a.alumnoid
-    LEFT JOIN SpeedMentoring_Reportes r ON s.sesionid = r.sesionid
-    INNER JOIN SpeedMentoring_Mentor m ON s.mentorrfc = m.mentorrfc
-    WHERE a.alumnoid = ? ;
+    SELECT 
+      s.SesionID,
+      s.Fecha, 
+      s.Periodo,
+      m.Nombre AS MentorNombre, 
+      COALESCE(r.ReporteID, 'Sin reporte') AS ReporteID,
+      COALESCE(r.TextoExplicativo, 'Sin reporte') AS TextoExplicativo
+    FROM Sesiones s
+    LEFT JOIN Mentor m ON s.MentorRFC = m.RFC
+    LEFT JOIN Reportes r ON s.SesionID = r.SesionID
+    WHERE s.EstudianteID = ?;
   `;
 
   pool.getConnection((err, connection) => {
@@ -24,19 +28,20 @@ const showSesionesStudentController = (req, res) => {
       connection.release();
 
       if (error) {
-        console.error('Error en la consulta (estudiante: sesiones)', error);
-        res.status(500).json({ message: 'Error en la consulta (estudiante: sesiones)' });
+        console.error('Error en la consulta', error);
+        res.status(500).json({ message: 'Error en la consulta' });
         return;
       }
 
       if (results.length === 0) {
-        res.json({ success: false });
+        res.json({ success: false, message: 'No se encontraron sesiones' });
         return;
       }
 
+      console.log(results);
       res.json({ success: true, data: results });
     });
   });
 };
 
-module.exports = showSesionesStudentController;
+module.exports = getSesionesWithMentorAndReport;

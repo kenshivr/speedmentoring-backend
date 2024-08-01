@@ -11,7 +11,7 @@ const searchEmail = (req, res) => {
       return;
     }
 
-    const queryAlumno = 'SELECT * FROM SpeedMentoring_Alumno WHERE AlumnoID = ? ';
+    const queryAlumno = 'SELECT * FROM Estudiante WHERE EstudianteID = ? ';
     connection.query(queryAlumno, [id], (error, resultsAlumno) => {
       if (error) {
         console.error('Error en la consulta (alumno):', error.stack);
@@ -22,7 +22,7 @@ const searchEmail = (req, res) => {
 
       if (resultsAlumno.length === 0) {
         // Si no se encuentra al alumno, buscar en la tabla de mentores
-        const queryMentor = 'SELECT * FROM SpeedMentoring_Mentor WHERE MentorRFC = ?';
+        const queryMentor = 'SELECT * FROM Mentor WHERE RFC = ?';
         connection.query(queryMentor, [id], (error, resultsMentor) => {
           if (error) {
             console.error('Error en la consulta (mentor):', error.stack);
