@@ -6,15 +6,16 @@ const showSesionesMentorController = (req, res) => {
   // Consulta SQL para obtener las sesiones del mentor con su información
   const query = `
     SELECT 
-      s.fecha, a.nombre, r.reporteid, s.sesionid 
+      Sesiones.*,
+      Estudiante.Nombre,
+      Estudiante.ApellidoPaterno,
+      Estudiante.ApellidoMaterno
     FROM 
-      SpeedMentoring_SesionesMentoria s 
+      Sesiones
     JOIN 
-      SpeedMentoring_Alumno a ON s.AlumnoID = a.AlumnoID 
-    LEFT JOIN 
-      SpeedMentoring_Reportes r ON s.sesionid = r.sesionid
-     WHERE 
-      s.MentorRFC = ?
+      Estudiante ON Sesiones.EstudianteID = Estudiante.EstudianteID
+    WHERE 
+      Sesiones.MentorRFC = ?
   `;
 
   // Ejecutar la consulta usando el pool de conexiones
