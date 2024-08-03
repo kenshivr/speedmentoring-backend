@@ -11,13 +11,9 @@ const getEventsFull = (req, res) => {
 
     const query = `
     SELECT 
-      Eventos.EventoID, Eventos.Nombre, Especialidad.Especialidad, Eventos.Descripción, Eventos.Fecha, Eventos.Link 
+      *
     FROM 
-      Eventos 
-    JOIN 
-      Especialidad 
-    ON 
-      Eventos.EspecialidadID = Especialidad.EspecialidadID
+      Eventos; 
     `
 
     connection.query(query, (error, results) => {
