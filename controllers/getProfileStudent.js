@@ -12,15 +12,11 @@ const getStudent = (req, res) => {
 
     const query = `
       SELECT 
-        a.Nombre, a.Periodo, e.Especialidad 
+        Nombre, ApellidoPaterno, ApellidoMaterno, Periodo
       FROM 
-        SpeedMentoring_Alumno a 
-      JOIN 
-        Especialidad e 
-      ON 
-        a.EspecialidadID = e.EspecialidadID 
+        Estudiante
       WHERE 
-        a.alumnoid = ?`;
+        EstudianteID = ?`;
 
     connection.query(query, [studentId], (error, results) => {
       if (error) {
@@ -36,23 +32,7 @@ const getStudent = (req, res) => {
         return;
       }
 
-      let response = results[0];
-
-      const newQuery = 'SELECT Especialidad FROM Especialidad';
-
-      connection.query(newQuery, (error, specialtyResults) => {
-        connection.release();
-
-        if (error) {
-          console.error("Error en la consulta a la base de datos (especialidades)", error);
-          res.status(500).json({ message: "Error en la consulta a la base de datos (especialidades)" });
-          return;
-        }
-
-        response.especialidades = specialtyResults;
-
-        res.json(response);
-      });
+      res.json(results[0]);
     });
   });
 };

@@ -38,7 +38,6 @@ const getSesionesWithMentorAndReport = (req, res) => {
         return;
       }
 
-      console.log(results);
       res.json({ success: true, data: results });
     });
   });

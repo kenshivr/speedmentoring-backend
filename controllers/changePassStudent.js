@@ -10,7 +10,7 @@ const changePass = (req, res) => {
       return;
     }
 
-    const queryMentor = 'SELECT * FROM SpeedMentoring_Alumno WHERE AlumnoID = ? ';
+    const queryMentor = 'SELECT * FROM Estudiante WHERE EstudianteID = ? ';
     connection.query(queryMentor, [userId], (error, results) => {
       if (error) {
         console.error('Error en la consulta (Alumno):', error.stack);
@@ -24,10 +24,10 @@ const changePass = (req, res) => {
       } else {
         const alumno = results[0];
 
-        if (alumno.Password !== currentPassword) {
+        if (alumno.PasswordHash !== currentPassword) {
           res.status(401).json({ message: 'Contraseña actual incorrecta' });
         } else {
-          const updateQuery = 'UPDATE SpeedMentoring_Alumno SET Password = ? WHERE AlumnoID = ?';
+          const updateQuery = 'UPDATE Estudiante SET PasswordHash = ? WHERE EstudianteID = ?';
           connection.query(updateQuery, [newPassword, userId], (updateError) => {
             if (updateError) {
               console.error('Error al actualizar la contraseña (Alumno) :', updateError.stack);

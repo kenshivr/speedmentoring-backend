@@ -5,13 +5,6 @@ const updateEvent = (req, res) => {
   const eventId = req.params.eventId;
   const { eventName, specialty, description, date, link } = req.body;
 
-  console.log(eventId);
-  console.log(eventName);
-  console.log(specialty);
-  console.log(description);
-  console.log(date);
-  console.log(link);
-
   pool.getConnection((err, connection) => {
     if (err) {
       console.error('Error al obtener la conexión a la base de datos:', err.stack);

@@ -22,6 +22,7 @@ const updateProfileMentor = require('./routes/updateProfileMentor.js');
 // Paginas de estudiantes
 const getStudents = require('./routes/getStudents.js');
 const getEventsFull = require('./routes/getEventsFull');
+const saveFeedback = require('./routes/saveFeedback.js');
 const getEventsStudent = require('./routes/getEventsStudent');
 const getProfileStudent = require('./routes/getProfileStudent');
 const getReportsStudent = require('./routes/getReportsStudent');
@@ -65,6 +66,7 @@ app.use('/api', getReportsStudent);
 app.use('/api', changePassStudent);
 app.use('/api', showSesionesStudent);
 app.use('/api', getSpecialtyStudent);
+app.use('/api', saveFeedback); // Tambien funciona para mentores
 
 // Administrador
 app.use('/api', newUsers);
