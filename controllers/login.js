@@ -3,6 +3,8 @@ const pool = require('../config/db');
 const login = (req, res) => {
   const { user, password } = req.body;
 
+  console.log(user, password);
+
   pool.getConnection((err, connection) => {
     if (err) {
       console.error('Error al obtener la conexión a la base de datos:', err.stack);
