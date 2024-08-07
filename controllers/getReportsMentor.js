@@ -15,13 +15,13 @@ const getReportBySesionId = (req, res) => {
       SELECT 
         s.fecha, CONCAT (m.nombre, ' ', m.apellidopaterno, ' ', m.apellidomaterno) AS nombre, r.textoexplicativo AS texto 
       FROM 
-        SpeedMentoring_SesionesMentoria s 
+        Sesiones s 
       JOIN 
-        SpeedMentoring_Mentor m 
+        Mentor m 
       ON 
-        s.MentorRFC = m.MentorRFC 
+        s.RFC = m.RFC 
       LEFT JOIN 
-        SpeedMentoring_Reportes r 
+        Reportes r 
       ON 
         s.sesionid = r.sesionid 
       WHERE 

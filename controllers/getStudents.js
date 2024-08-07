@@ -13,7 +13,7 @@ const getStudents = (req, res) => {
     SELECT 
       *
     FROM 
-      SpeedMentoring_Alumno
+      estudiante
     `
 
     connection.query(query, (error, results) => {

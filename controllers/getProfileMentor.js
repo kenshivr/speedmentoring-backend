@@ -14,15 +14,15 @@ const getProfileMentor = (req, res) => {
 
     const query = `
       SELECT    
-        m.MentorRFC, m.Nombre, m.ApellidoPaterno, m.ApellidoMaterno, m.NumeroTelefono, m.CorreoElectronico, m.Empresa, m.Puesto, m.GradoAcademico, e.Especialidad 
+        m.RFC, m.Nombre, m.ApellidoPaterno, m.ApellidoMaterno, m.NumeroTelefono, m.CorreoElectronico, m.Empresa, m.Puesto, m.GradoAcademico, e.Especialidad
       FROM    
-        SpeedMentoring_Mentor m 
+        Mentor m 
       JOIN    
         Especialidad e 
       ON 
         m.EspecialidadID = e.EspecialidadID 
       WHERE   
-        m.MentorRFC = ?
+        m.RFC = ?
     `
 
     connection.query(query, [mentorID], (error, mentorResults) => {

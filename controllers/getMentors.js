@@ -13,7 +13,7 @@ const getMentors = (req, res) => {
     SELECT 
       *
     FROM 
-      SpeedMentoring_Mentor
+      mentor
     `
 
     connection.query(query, (error, results) => {

@@ -12,7 +12,7 @@ const getStudent = (req, res) => {
 
     const query = `
       SELECT 
-        Nombre, ApellidoPaterno, ApellidoMaterno, Periodo
+        Nombre, ApellidoPaterno, ApellidoMaterno, Periodo, EspecialidadID, NumeroTelefono, CorreoElectronicoPersonal, MentorRFC
       FROM 
         Estudiante
       WHERE 
